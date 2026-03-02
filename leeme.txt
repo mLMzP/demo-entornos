@@ -1,0 +1,18 @@
+Cómo ponerlo en marcha
+Construir y levantar todo:
+
+Bash
+docker-compose up --build
+Esto compilará tu Java, creará la imagen y levantará la DB.
+
+Verificar que la App conectó a la DB:
+
+Bash
+docker-compose logs -f app-test
+(Busca el mensaje: "Started Application in X seconds")
+
+Limpiar todo al terminar:
+
+Bash
+docker-compose down -v
+El flag -v borra también los volúmenes de la base de datos para que la próxima prueba sea totalmente limpia.
