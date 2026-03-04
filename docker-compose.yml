@@ -1,0 +1,47 @@
+services:
+  # Base de datos de pruebas
+  db-test:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: testdb
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: spring_user
+      MYSQL_PASSWORD: spring_password
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 10
+
+  # Aplicacion Spring Boot
+  app-test:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-test:3306/testdb?allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=spring_user
+      - SPRING_DATASOURCE_PASSWORD=spring_password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on:
+      db-test:
+        condition: service_healthy #Espera a que la BBDD este lista antes de arrancar la App
+
+  # Agregamos Adminer como gestor de BBDD
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8081:8080"
+
+      
+
+
+
+
+
+
+
+
+
